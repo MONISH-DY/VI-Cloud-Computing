@@ -1,0 +1,81 @@
+<aside class="sidebar">
+    <div class="upload-btn-container">
+        <div class="dropdown">
+            <button class="btn-new" id="newBtn">
+                <img src="https://www.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png" alt="Plus"
+                    style="width: 24px; height: 24px;">
+                <span>New</span>
+            </button>
+            <div id="newDropdown" class="dropdown-content">
+                <div class="dropdown-item" onclick="openCreateFolderModal()"><i class="fas fa-folder-plus"></i> New
+                    folder</div>
+                <hr>
+                <div class="dropdown-item" onclick="openUploadModal()"><i class="fas fa-file-upload"></i> File upload
+                </div>
+                <div class="dropdown-item" onclick="document.getElementById('folderInput').click()"><i
+                        class="fas fa-folder-open"></i> Folder upload</div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/dashboard"
+        class="sidebar-item {% if request.path == '/dashboard' and not request.args.get('trash') %}active{% endif %}">
+        <i class="fas fa-hdd"></i>
+        <span>My Drive</span>
+    </a>
+    <a href="/shared" class="sidebar-item {% if request.path == '/shared' %}active{% endif %}">
+        <i class="fas fa-users"></i>
+        <span>Shared with me</span>
+    </a>
+    <a href="/recent" class="sidebar-item {% if request.path == '/recent' %}active{% endif %}">
+        <i class="fas fa-clock"></i>
+        <span>Recent</span>
+    </a>
+    <a href="/starred" class="sidebar-item {% if request.path == '/starred' %}active{% endif %}">
+        <i class="fas fa-star"></i>
+        <span>Starred</span>
+    </a>
+    <a href="/trash" class="sidebar-item {% if request.path == '/trash' %}active{% endif %}">
+        <i class="fas fa-trash-alt"></i>
+        <span>Trash</span>
+    </a>
+
+    <hr style="margin: 8px 12px; border-top: 1px solid var(--border-color);">
+
+    <a href="javascript:void(0)" onclick="openShareModal()" class="sidebar-item">
+        <i class="fas fa-user-plus"></i>
+        <span>Share Drive</span>
+    </a>
+
+    <div class="storage-card">
+        <div class="storage-header">
+            <i class="fas fa-cloud"></i>
+            <span>Storage</span>
+        </div>
+        <div class="storage-progress">
+            <div
+                style="height: 8px; width: 100%; background: var(--border-color); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 8px;">
+                <div class="progress-bar-segmented"
+                    style="height: 100%; width: {{ storage_percent | default(0) }}%; min-width: 5%; margin-bottom: 0; background: transparent;">
+                    <div class="segment images" style="width: {{ storage_breakdown.images | default(0) }}%"
+                        title="Images"></div>
+                    <div class="segment videos" style="width: {{ storage_breakdown.videos | default(0) }}%"
+                        title="Videos"></div>
+                    <div class="segment docs" style="width: {{ storage_breakdown.documents | default(0) }}%"
+                        title="Documents"></div>
+                    <div class="segment others" style="width: {{ storage_breakdown.others | default(0) }}%"
+                        title="Others"></div>
+                </div>
+            </div>
+        </div>
+        <div class="storage-legend">
+            <span title="Images"><i class="fas fa-circle" style="color: #4f46e5;"></i></span>
+            <span title="Videos"><i class="fas fa-circle" style="color: #ec4899;"></i></span>
+            <span title="Documents"><i class="fas fa-circle" style="color: #10b981;"></i></span>
+            <span title="Others"><i class="fas fa-circle" style="color: #f59e0b;"></i></span>
+        </div>
+        <div class="storage-details">
+            <strong>{{ used or '0 B' }}</strong> of 15 GB used
+        </div>
+    </div>
+</aside>

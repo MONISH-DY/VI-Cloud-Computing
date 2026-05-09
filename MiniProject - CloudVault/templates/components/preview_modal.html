@@ -1,0 +1,25 @@
+<div id="previewModal" class="modal" style="background-color: rgba(0,0,0,0.9);">
+    <div class="preview-container" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+        <div class="preview-header" style="padding: 16px; display: flex; justify-content: space-between; align-items: center; color: white;">
+            <div class="preview-info">
+                <span id="previewFileName">filename.jpg</span>
+            </div>
+            <div class="preview-actions" style="display: flex; gap: 16px; align-items: center;">
+                <button class="icon-btn-light" id="downloadPreview"><i class="fas fa-download"></i></button>
+                <span class="close-btn" style="color: white;" onclick="closePreviewModal()">&times;</span>
+            </div>
+        </div>
+        <div class="preview-content" style="flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 40px;">
+            <div id="previewSpinner" class="spinner hidden"><i class="fas fa-circle-notch fa-spin fa-3x" style="color: white;"></i></div>
+            <img id="previewImage" src="" alt="Preview" class="hidden" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            <video id="previewVideo" controls class="hidden" style="max-width: 100%; max-height: 100%;"></video>
+            <iframe id="previewPdf" src="" class="hidden" style="width: 80%; height: 90%; border: none; background: white;"></iframe>
+            <pre id="previewCode" class="hidden line-numbers" style="max-width: 90%; max-height: 85%; overflow: auto; margin: 0; padding: 20px; border-radius: 8px; font-size: 14px; background: #1d1f21; color: #c5c8c6;"><code id="codeContent" class="language-clike"></code></pre>
+            <div id="previewFallback" class="hidden" style="text-align: center; color: white;">
+                <i class="fas fa-file-alt fa-5x" style="margin-bottom: 20px;"></i>
+                <p>Preview not available for this file type.</p>
+                <button class="btn-primary" style="margin-top: 16px;" onclick="handleDownload()">Download File</button>
+            </div>
+        </div>
+    </div>
+</div>

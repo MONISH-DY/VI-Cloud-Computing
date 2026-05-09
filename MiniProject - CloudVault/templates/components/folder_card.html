@@ -1,0 +1,21 @@
+{% set full_folder_path = path ~ '/' ~ folder if path else folder %}
+<div class="card folder-card" data-id="{{ full_folder_path }}" data-type="folder" onclick="toggleSelection(event, '{{ full_folder_path }}')" ondblclick="navigateToFolder('{{ full_folder_path }}')" oncontextmenu="showContextMenu(event, '{{ full_folder_path }}', 'folder')">
+    <div class="selection-checkbox">
+        <i class="far fa-circle"></i>
+    </div>
+    <div class="card-icon">
+        <i class="fas fa-folder text-secondary" style="font-size: 64px;"></i>
+    </div>
+    <div class="card-info">
+        <div class="card-text" style="display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-folder text-secondary"></i>
+            <span class="card-name">{{ folder }}</span>
+        </div>
+        <div class="card-actions">
+            <button class="icon-btn-sm text-danger" onclick="event.stopPropagation(); handleDeleteDirect('{{ full_folder_path }}', 'folder')" title="Delete">
+                <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-btn-sm"><i class="fas fa-ellipsis-v"></i></button>
+        </div>
+    </div>
+</div>

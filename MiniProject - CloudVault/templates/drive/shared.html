@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Shared with me{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/shared" class="logo">Shared with me</a>
+{% endblock %}
+
+{% block content %}
+<div class="drive-view">
+    {% if shared %}
+        <div class="grid-container">
+            {% for item in shared %}
+                <div class="card shared-card" onclick="window.location.href='/shared/{{ item.owner_id }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-folder-shared text-primary" style="font-size: 64px;"></i>
+                    </div>
+                    <div class="card-info" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                            <span class="card-name">{{ item.owner_name }}'s Drive</span>
+                            <span style="font-size: 11px; color: var(--text-secondary);">{{ item.owner_email }}</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="icon-btn-sm text-danger" onclick="event.stopPropagation(); removeSharedAccess('{{ item.owner_id }}')" title="Remove Access">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state" style="text-align: center; margin-top: 100px;">
+            <i class="fas fa-users fa-5x" style="color: var(--border-color);"></i>
+            <h2 style="margin-top: 24px; font-weight: 400;">Shared with you</h2>
+            <p style="color: var(--text-secondary); margin-top: 12px;">Files and folders others have shared with you.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function removeSharedAccess(ownerId) {
+    if (confirm("Are you sure you want to remove your access to this drive?")) {
+        fetch(`/shared/remove/${ownerId}`, { method: 'POST' })
+            .then(res => {
+                if (res.ok) location.reload();
+                else alert("Failed to remove access");
+            });
+    }
+}
+</script>
+{% endblock %}

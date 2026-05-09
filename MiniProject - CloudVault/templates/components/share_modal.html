@@ -1,0 +1,35 @@
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Share Your Drive</h3>
+            <span class="close-btn" onclick="closeShareModal()">&times;</span>
+        </div>
+        <form action="/share" method="POST">
+            <div style="margin-bottom: 20px;">
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+                    Grant access to your entire drive to another user by their email address.
+                </p>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">User Email</label>
+                    <input type="email" name="email" placeholder="email@example.com" required 
+                           style="width: 100%; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--hover-bg); color: var(--text-color);">
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px;">Access Level</label>
+                    <select name="permission" required 
+                            style="width: 100%; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--hover-bg); color: var(--text-color);">
+                        <option value="read">Read Only (View & Download)</option>
+                        <option value="write">Write Access (Upload, Rename & Delete)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button type="button" class="btn-outline-primary" onclick="closeShareModal()" style="padding: 10px 20px;">Cancel</button>
+                <button type="submit" class="btn-primary" style="padding: 10px 24px;">Grant Access</button>
+            </div>
+        </form>
+    </div>
+</div>

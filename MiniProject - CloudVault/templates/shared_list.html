@@ -1,0 +1,100 @@
+<!-- templates/shared_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Drives</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin:40px;
+            background:#f8f9fa;
+            color:#222;
+        }
+
+        .box{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        ul{
+            list-style:none;
+            padding:0;
+        }
+
+        li{
+            padding:14px;
+            background:white;
+            margin-bottom:10px;
+            border-radius:10px;
+            box-shadow:0 1px 5px rgba(0,0,0,0.06);
+        }
+
+        a{
+            text-decoration:none;
+        }
+
+        .badge{
+            display:inline-block;
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:13px;
+            color:white;
+            margin-left:8px;
+        }
+
+        .read{
+            background:#34a853;
+        }
+
+        .write{
+            background:#4285f4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>Shared Drives</h1>
+
+    <a href="{{ url_for('files.dashboard') }}">← Back to Dashboard</a>
+</div>
+
+
+<div class="box">
+    <ul>
+
+    {% for item in shared %}
+        <li>
+
+            <strong>{{ item.owner_email }}</strong>
+
+            {% if item.permission == "read" %}
+                <span class="badge read">READ</span>
+            {% else %}
+                <span class="badge write">WRITE</span>
+            {% endif %}
+
+            |
+
+            <a href="{{ url_for('files.view_shared_drive',
+                owner_id=item.owner_id) }}">
+                Open Drive
+            </a>
+
+        </li>
+
+    {% else %}
+        <li>No shared drives</li>
+    {% endfor %}
+
+    </ul>
+</div>
+
+</body>
+</html>

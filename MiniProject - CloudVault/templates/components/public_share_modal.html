@@ -1,0 +1,81 @@
+<div id="publicShareModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Share Public Link</h3>
+            <span class="close-btn" onclick="closePublicShareModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">Anyone with this link can view this file for a limited time.</p>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Link Expiry</label>
+                <select id="linkExpiry" class="form-control" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--sidebar-bg); color: var(--text-color);">
+                    <option value="1">1 Hour</option>
+                    <option value="24" selected>24 Hours</option>
+                    <option value="168">7 Days</option>
+                    <option value="720">30 Days</option>
+                </select>
+            </div>
+            <div id="linkOutput" class="hidden" style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Your Public Link</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="generatedLink" readonly style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--hover-bg); color: var(--text-color); font-size: 13px;">
+                    <button class="btn-primary" onclick="copyPublicLink()"><i class="fas fa-copy"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+            <button class="btn-secondary" onclick="closePublicShareModal()">Close</button>
+            <button class="btn-primary" id="generateLinkBtn" onclick="generatePublicLink()">Generate Link</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentSharePath = '';
+
+function openPublicShareModal(path) {
+    currentSharePath = path;
+    document.getElementById('publicShareModal').style.display = 'flex';
+    document.getElementById('linkOutput').classList.add('hidden');
+    document.getElementById('generateLinkBtn').classList.remove('hidden');
+}
+
+function closePublicShareModal() {
+    document.getElementById('publicShareModal').style.display = 'none';
+}
+
+async function generatePublicLink() {
+    const hours = document.getElementById('linkExpiry').value;
+    const btn = document.getElementById('generateLinkBtn');
+    btn.disabled = true;
+    btn.innerText = 'Generating...';
+    
+    const formData = new FormData();
+    formData.append('filename', currentSharePath);
+    formData.append('hours', hours);
+    
+    try {
+        const response = await fetch('/share/public', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        
+        document.getElementById('generatedLink').value = data.link;
+        document.getElementById('linkOutput').classList.remove('hidden');
+        btn.classList.add('hidden');
+    } catch (e) {
+        showToast('Failed to generate link', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerText = 'Generate Link';
+    }
+}
+
+function copyPublicLink() {
+    const input = document.getElementById('generatedLink');
+    input.select();
+    document.execCommand('copy');
+    showToast('Link copied to clipboard!', 'success');
+}
+</script>

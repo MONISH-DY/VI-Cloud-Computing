@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Trash{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/trash" class="logo">Trash</a>
+{% endblock %}
+
+{% block content %}
+<div class="drive-view">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 16px; background-color: var(--sidebar-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+        <div>
+            <h2 style="font-size: 18px; font-weight: 600;">Trash</h2>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">Items in trash are deleted forever after 30 days.</p>
+        </div>
+        {% if files %}
+        <button class="btn-outline-primary" style="border-color: var(--error); color: var(--error);" onclick="emptyTrash()">
+            <i class="fas fa-trash-alt"></i> Empty trash
+        </button>
+        {% endif %}
+    </div>
+
+    {% if files %}
+        <div class="grid-container">
+            {% for file in files %}
+                <div class="card file-card">
+                    <div class="card-icon">
+                        {% if file.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')) %}
+                            <i class="fas fa-file-image text-primary"></i>
+                        {% elif file.name.lower().endswith('.pdf') %}
+                            <i class="fas fa-file-pdf text-danger"></i>
+                        {% elif file.name.lower().endswith(('.mp4', '.mkv', '.avi')) %}
+                            <i class="fas fa-file-video text-warning"></i>
+                        {% else %}
+                            <i class="fas fa-file-alt text-secondary"></i>
+                        {% endif %}
+                    </div>
+                    <div class="card-info">
+                        <span class="card-name">{{ file.name.split('/')[-1] }}</span>
+                        <div class="card-actions" style="display: flex; gap: 8px;">
+                            <a href="/trash/restore/{{ file.name }}" class="icon-btn-sm" title="Restore"><i class="fas fa-undo"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state" style="text-align: center; margin-top: 100px;">
+            <i class="fas fa-trash fa-5x" style="color: var(--border-color); margin-bottom: 24px;"></i>
+            <h2 style="font-weight: 600;">No items in Trash</h2>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function emptyTrash() {
+    if (confirm("Are you sure you want to permanently delete all items in the trash? This cannot be undone.")) {
+        fetch('/trash/empty', {
+            method: 'POST'
+        }).then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

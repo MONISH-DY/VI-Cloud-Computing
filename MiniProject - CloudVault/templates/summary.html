@@ -1,0 +1,24 @@
+<!-- templates/summary.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Summary</title>
+</head>
+<body>
+
+<h1>Document Summary</h1>
+
+<h3>{{ filename }}</h3>
+
+<hr>
+
+<pre>{{ summary }}</pre>
+
+<hr>
+
+<a href="{{ url_for('files.dashboard') }}">Back to Dashboard</a>
+
+</body>
+</html>

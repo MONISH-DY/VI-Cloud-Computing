@@ -1,0 +1,27 @@
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Upload Files</h3>
+            <span class="close-btn" onclick="closeUploadModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="dropZone" class="drop-zone">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: var(--primary-color); margin-bottom: 16px;"></i>
+                <p>Drag and drop files here or click to select</p>
+                <input type="file" id="fileInput" multiple style="display: none;">
+                <input type="file" id="folderInput" webkitdirectory directory style="display: none;">
+                <div style="display: flex; gap: 12px; justify-content: center; margin: 16px auto;">
+                    <button class="btn-new" onclick="document.getElementById('fileInput').click()">Select Files</button>
+                    <button class="btn-new" onclick="document.getElementById('folderInput').click()">Select Folder</button>
+                </div>
+            </div>
+            <div id="uploadList" class="upload-list" style="margin-top: 20px; max-height: 200px; overflow-y: auto;">
+                <!-- Upload items will appear here -->
+            </div>
+        </div>
+        <div class="modal-footer" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 12px;">
+            <button class="btn-secondary" onclick="closeUploadModal()">Cancel</button>
+            <button class="btn-primary" id="startUploadBtn" onclick="startUpload()">Upload</button>
+        </div>
+    </div>
+</div>

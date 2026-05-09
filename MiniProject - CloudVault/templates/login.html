@@ -1,0 +1,60 @@
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CloudVault</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v=2">
+</head>
+<body>
+
+    <!-- Animated Background Shapes -->
+    <div class="auth-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h2 class="auth-title">Welcome Back</h2>
+            <p class="auth-subtitle">Login to access your CloudVault</p>
+        </div>
+
+        {% if error %}
+        <div class="auth-error">
+            <i class="fas fa-exclamation-circle"></i> {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" class="form-input" placeholder="Email Address" required>
+            </div>
+
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" class="form-input" placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="btn-auth">
+                Sign In
+            </button>
+        </form>
+
+        <div class="auth-links">
+            <a href="{{ url_for('auth.forgot_password') }}">Forgot Password?</a>
+            <span style="color: var(--text-muted); margin: 0 10px;">|</span>
+            <a href="{{ url_for('auth.register') }}">Create an account</a>
+        </div>
+    </div>
+
+</body>
+</html>

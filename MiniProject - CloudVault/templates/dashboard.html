@@ -1,0 +1,223 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudVault Dashboard</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:40px;
+    background:#f8f9fa;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.box{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+input,select,button{
+    padding:8px;
+    margin:5px 0;
+}
+
+button{
+    cursor:pointer;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    padding:12px;
+    margin-bottom:8px;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+
+a{
+    text-decoration:none;
+}
+
+.actions a{
+    margin-right:10px;
+}
+
+.folder{
+    font-weight:bold;
+}
+
+.meter{
+    background:#ddd;
+    height:18px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.meter-fill{
+    background:#4285f4;
+    height:100%;
+    width:35%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <h1>Welcome {{ name }}</h1>
+
+    <div>
+        <a href="{{ url_for('files.shared_list') }}">Shared With Me</a>
+        |
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </div>
+</div>
+
+
+<div class="box">
+    <h3>Storage Used</h3>
+    <strong>{{ used }}</strong>
+
+    <div class="meter">
+        <div class="meter-fill"></div>
+    </div>
+</div>
+
+
+<div class="box">
+    <h3>Share My Drive</h3>
+
+    <form action="{{ url_for('files.share') }}" method="POST">
+        <input type="email" name="email" placeholder="User email" required>
+
+        <select name="permission">
+            <option value="read">Read Only</option>
+            <option value="write">Write Access</option>
+        </select>
+
+        <button type="submit">Grant Access</button>
+    </form>
+</div>
+
+
+<div class="box">
+    <a href="{{ url_for('files.dashboard') }}">Root</a>
+
+    {% for item in breadcrumbs %}
+        >
+        <a href="{{ url_for('files.dashboard') }}?path={{ item.path }}">
+            {{ item.name }}
+        </a>
+    {% endfor %}
+</div>
+
+
+<div class="box">
+    <h3>Create Folder</h3>
+
+    <form action="{{ url_for('files.new_folder') }}" method="POST">
+        <input type="hidden" name="path" value="{{ path }}">
+        <input type="text" name="folder" placeholder="Folder name" required>
+        <button type="submit">Create</button>
+    </form>
+</div>
+
+
+<div class="box">
+    <h3>Upload File</h3>
+
+    <form action="{{ url_for('files.upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="path" value="{{ path }}">
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+
+<div class="box">
+    <h3>Search</h3>
+
+    <form method="GET" action="{{ url_for('files.dashboard') }}">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search files">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+
+<div class="box">
+    <h3>Folders</h3>
+
+    <ul>
+    {% for folder in folders %}
+        <li class="folder">
+            📁
+            <a href="{{ url_for('files.dashboard') }}?path={{ path ~ '/' if path else '' }}{{ folder }}">
+                {{ folder }}
+            </a>
+        </li>
+    {% else %}
+        <li>No folders</li>
+    {% endfor %}
+    </ul>
+</div>
+
+
+<div class="box">
+    <h3>My Files</h3>
+
+    <ul>
+    {% for file in files %}
+        <li>
+
+        {% if file.name is defined %}
+            <strong>{{ file.name }}</strong>
+            <br>
+            Size: {{ file.size }} bytes
+            {% set filename = path ~ '/' ~ file.name if path else file.name %}
+        {% else %}
+            <strong>{{ file[2] }}</strong>
+            {% set filename = file[2] %}
+        {% endif %}
+
+        <div class="actions">
+
+            <a href="{{ url_for('files.preview', filename=filename) }}" target="_blank">
+                Preview
+            </a>
+
+            <a href="{{ url_for('files.download', filename=filename) }}">
+                Download
+            </a>
+
+            <a href="{{ url_for('files.delete', filename=filename) }}"
+               onclick="return confirm('Delete this file?')">
+                Delete
+            </a>
+
+        </div>
+
+        </li>
+    {% else %}
+        <li>No files found</li>
+    {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>

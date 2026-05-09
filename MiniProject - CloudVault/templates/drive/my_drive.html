@@ -1,0 +1,79 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}My Drive{% endblock %}
+
+{% block breadcrumb %}
+    <a href="/dashboard" class="logo">My Drive</a>
+    {% if breadcrumbs %}
+        {% for crumb in breadcrumbs %}
+            <i class="fas fa-chevron-right" style="font-size: 12px; color: var(--text-secondary);"></i>
+            <a href="/dashboard?path={{ crumb.path }}" class="logo">{{ crumb.name }}</a>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="drive-view">
+    {% if folders %}
+        <h3 class="section-title">Folders</h3>
+        <div class="grid-container">
+            {% for folder in folders %}
+                {% include 'components/folder_card.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if files %}
+        <h3 class="section-title">Files</h3>
+        <div class="grid-container">
+            {% for file in files %}
+                {% include 'components/file_card.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if not folders and not files %}
+        <div class="empty-state" style="text-align: center; margin-top: 100px;">
+            <img src="https://ssl.gstatic.com/docs/doclist/images/empty_state_my_drive_v2.svg" alt="Empty Drive" style="width: 200px;">
+            <h2 style="margin-top: 24px; font-weight: 400;">A place for all of your files</h2>
+            <p style="color: var(--text-secondary); margin-top: 12px;">Google Drive keeps all your files safe, so you can access them from any device.</p>
+            <button class="btn-primary" style="margin-top: 24px; padding: 12px 24px;" onclick="openUploadModal()">Upload Files</button>
+        </div>
+    {% endif %}
+</div>
+
+<button class="fab" onclick="openUploadModal()" title="Upload New File">
+    <i class="fas fa-plus"></i>
+</button>
+
+<style>
+    .fab {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background-color: var(--bg-color);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        border: 1px solid var(--border-color);
+        color: var(--primary-color);
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: var(--transition);
+        z-index: 100;
+    }
+    
+    .fab:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    }
+    
+    @media (min-width: 769px) {
+        .fab { display: none; }
+    }
+</style>
+{% endblock %}

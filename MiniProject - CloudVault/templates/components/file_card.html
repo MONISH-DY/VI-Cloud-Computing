@@ -1,0 +1,52 @@
+{% if file is mapping %}
+    {% set filename = file.get('name', 'Unknown') %}
+    {% set full_path = path ~ '/' ~ filename if path else filename %}
+    {% set is_starred = file.get('starred', False) %}
+    {% set is_shared = file.get('shared', False) %}
+    {% set owner_id = file.get('owner_id', '') %}
+    {% set owner_email = file.get('owner_email', '') %}
+{% else %}
+    {# Fallback for tuple/list results #}
+    {% set filename = file[2].split('/')[-1] if file|length > 2 else 'Unknown' %}
+    {% set full_path = file[2] if file|length > 2 else '' %}
+    {% set is_starred = False %}
+    {% set is_shared = False %}
+    {% set owner_id = '' %}
+    {% set owner_email = '' %}
+{% endif %}
+
+<div class="card file-card" data-id="{{ full_path }}" data-type="file" data-owner-id="{{ owner_id if is_shared else '' }}" oncontextmenu="{% if is_shared %}showSharedContextMenu(event, '{{ full_path }}', 'file', '{{ owner_id }}'){% else %}showContextMenu(event, '{{ full_path }}', 'file'){% endif %}" onclick="toggleSelection(event, '{{ full_path }}')">
+    <div class="selection-checkbox">
+        <i class="far fa-circle"></i>
+    </div>
+    <div class="card-icon">
+        {% if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')) %}
+            <i class="fas fa-file-image text-primary"></i>
+        {% elif filename.lower().endswith('.pdf') %}
+            <i class="fas fa-file-pdf text-danger"></i>
+        {% elif filename.lower().endswith(('.mp4', '.mkv', '.avi')) %}
+            <i class="fas fa-file-video text-warning"></i>
+        {% else %}
+            <i class="fas fa-file-alt text-secondary"></i>
+        {% endif %}
+    </div>
+    <div class="card-info">
+        <div class="card-text">
+            <span class="card-name">{{ filename }}</span>
+            {% if is_shared %}
+                <span class="card-owner">Shared by: {{ owner_email }}</span>
+            {% endif %}
+        </div>
+        <div class="card-actions">
+            {% if is_starred %}
+                <a href="/unstar/{{ full_path }}" class="icon-btn-sm star-btn" style="color: #f59e0b;" title="Unstar"><i class="fas fa-star"></i></a>
+            {% else %}
+                <a href="/star/{{ full_path }}" class="icon-btn-sm star-btn" title="Star"><i class="far fa-star"></i></a>
+            {% endif %}
+            <button class="icon-btn-sm text-danger" onclick="event.stopPropagation(); handleDeleteDirect('{{ full_path }}', 'file')" title="Delete">
+                <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-btn-sm"><i class="fas fa-ellipsis-v"></i></button>
+        </div>
+    </div>
+</div>

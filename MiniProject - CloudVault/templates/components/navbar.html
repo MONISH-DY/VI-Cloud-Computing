@@ -1,0 +1,41 @@
+<nav class="navbar">
+    <div class="nav-left">
+        <a href="/dashboard" class="logo">
+            <i class="fas fa-cloud-upload-alt text-primary"></i>
+            <span>CloudVault</span>
+        </a>
+    </div>
+    <div class="nav-center">
+        <form action="/dashboard" method="GET" class="search-bar">
+            <i class="fas fa-search text-secondary"></i>
+            <input type="text" name="search" placeholder="Search in CloudVault" value="{{ search or '' }}">
+            <button type="submit" class="hidden"></button>
+        </form>
+    </div>
+    <div class="nav-right">
+        <button class="icon-btn" id="themeToggle" title="Toggle Dark Mode">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="icon-btn" title="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        <div class="dropdown" id="profileContainer">
+            <div class="user-profile" id="profileBtn" style="cursor: pointer;">
+                <img src="https://ui-avatars.com/api/?name={{ name or 'User' }}&background=random" alt="User Profile" class="avatar">
+            </div>
+            <div id="profileDropdown" class="dropdown-content" style="right: 0; left: auto; min-width: 240px; padding: 16px;">
+                <div class="profile-dropdown-header">
+                    <img src="https://ui-avatars.com/api/?name={{ name or 'User' }}&background=random" alt="User" class="profile-avatar-lg">
+                    <div style="text-align: center;">
+                        <div class="profile-name">{{ name or 'User' }}</div>
+                        <div class="profile-email">{{ session.email or '' }}</div>
+                    </div>
+                </div>
+                <a href="/logout" class="dropdown-item text-danger" style="text-decoration: none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
