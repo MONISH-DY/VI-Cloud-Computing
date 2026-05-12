@@ -43,6 +43,9 @@
             {% else %}
                 <a href="/star/{{ full_path }}" class="icon-btn-sm star-btn" title="Star"><i class="far fa-star"></i></a>
             {% endif %}
+            <button class="icon-btn-sm text-primary" onclick="event.stopPropagation(); openAIModal('{{ full_path }}')" title="Smart Summarize">
+                <i class="fas fa-robot"></i>
+            </button>
             <button class="icon-btn-sm text-danger" onclick="event.stopPropagation(); handleDeleteDirect('{{ full_path }}', 'file')" title="Delete">
                 <i class="fas fa-trash"></i>
             </button>

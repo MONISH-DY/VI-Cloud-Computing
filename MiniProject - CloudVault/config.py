@@ -34,3 +34,9 @@ class Config:
     SUPABASE_SERVICE_KEY = os.getenv(
         "SUPABASE_SERVICE_KEY"
     )
+
+    # Google Gemini
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+    # Security
+    MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100MB limit

@@ -26,6 +26,8 @@ from services.file_service import (
     empty_trash
 )
 
+from services.ai_service import summarize_text, extract_tags
+
 files_bp = Blueprint("files", __name__)
 
 
@@ -351,6 +353,70 @@ def upload_shared(owner_id):
         upload_user_file(owner_id, full_name, file)
 
     return redirect(f"/shared/{owner_id}?path={path}")
+
+
+# =====================================
+# AI FEATURES
+# =====================================
+@files_bp.route("/ai/summarize/<path:filename>")
+def ai_summarize(filename):
+    user_id = session.get("user_id")
+    if not user_id:
+        return {"error": "Session expired"}, 401
+    
+    from services.azure_blob import container_client
+    blob_client = container_client.get_blob_client(f"user_{user_id}/{filename}")
+    
+    import base64
+
+    try:
+        # Check if summary already exists in metadata (Caching)
+        props = blob_client.get_blob_properties()
+        metadata = props.metadata or {}
+        
+        if "summary_b64" in metadata:
+            try:
+                decoded_summary = base64.b64decode(metadata["summary_b64"]).decode('utf-8')
+                tags = metadata.get("tags", "Analysis").split(",")
+                return {
+                    "filename": filename,
+                    "summary": decoded_summary,
+                    "tags": tags,
+                    "cached": True
+                }, 200
+            except Exception:
+                pass # Fallback to regeneration
+
+        # Generate new summary
+        from services.ai_service import extract_text_from_bytes, summarize_text, extract_tags
+        content_bytes = download_user_file(user_id, filename)
+        
+        text_content = extract_text_from_bytes(content_bytes, filename)
+        if not text_content:
+            return {"error": "Unreadable file content."}, 400
+            
+        summary = summarize_text(text_content)
+        tags = extract_tags(text_content)
+        
+        # Save to metadata (Reduced to 1500 chars to stay safe under 8KB limit)
+        summary_b64 = base64.b64encode(summary[:1500].encode('utf-8')).decode('utf-8')
+        metadata["summary_b64"] = summary_b64
+        metadata["tags"] = ",".join(tags)
+        
+        try:
+            blob_client.set_blob_metadata(metadata)
+        except Exception as e:
+            print(f"Metadata Storage Warning: {str(e)}") # Don't fail the request if only metadata fails
+        
+        return {
+            "filename": filename,
+            "summary": summary,
+            "tags": tags,
+            "cached": False
+        }, 200
+        
+    except Exception as e:
+        return {"error": str(e)}, 500
 
 @files_bp.route("/share/public", methods=["POST"])
 def create_public_link():

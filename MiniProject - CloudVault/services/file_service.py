@@ -183,8 +183,14 @@ def get_folder_items(user_id, current_path=""):
         if len(parts) > 1:
             if parts[0] != ".trash":
                 folders.add(parts[0])
+        elif name == ".folder":
+            # This is the marker for the current folder itself, skip
+            continue
+        elif name.endswith("/.folder"):
+            # This is a marker for a subfolder
+            folders.add(name.replace("/.folder", ""))
         else:
-            if name != ".folder" and not name.startswith(".trash"):
+            if not name.startswith(".trash"):
                 files.append({
                     "name": name,
                     "size": blob.size,
@@ -291,20 +297,23 @@ def rename_user_file(user_id, old_name, new_name):
     found = False
     for blob in blobs:
         found = True
-        # Calculate new blob name
-        # If old_name was "folder", and blob was "user_1/folder/file.txt"
-        # and new_name is "newfolder", new blob should be "user_1/newfolder/file.txt"
-        
-        # Actually, if it's a file, blob.name matches old_prefix exactly (or almost)
-        # If it's a folder, blob.name starts with old_prefix/
-        
         relative_path = blob.name.replace(old_prefix, "", 1)
         new_blob_name = f"{prefix}{new_name}{relative_path}"
         
         old_blob = container_client.get_blob_client(blob.name)
         new_blob = container_client.get_blob_client(new_blob_name)
         
+        # Preservation Logic: Fetch metadata before copy
+        properties = old_blob.get_blob_properties()
+        source_metadata = properties.metadata
+        
+        # Copy content
         new_blob.start_copy_from_url(old_blob.url)
+        
+        # Re-apply metadata to ensure it's not lost
+        if source_metadata:
+            new_blob.set_blob_metadata(source_metadata)
+            
         old_blob.delete_blob()
     
     if not found:

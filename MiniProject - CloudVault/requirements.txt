@@ -1,0 +1,9 @@
+flask
+python-dotenv
+azure-storage-blob
+supabase
+google-generativeai
+werkzeug
+pypdf
+python-docx
+opencensus-ext-azure
